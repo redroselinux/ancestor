@@ -1,0 +1,5 @@
+vendor/lua/liblua.a
+test/workdir_/
+ancestor
+*.tar.zst
+obj

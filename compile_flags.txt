@@ -1,0 +1,5 @@
+-std=c23
+-Wall
+-Wextra
+-O2
+-Isrc/vendor/lua/lua-5.5.0/src
