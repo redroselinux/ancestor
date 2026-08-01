@@ -201,6 +201,18 @@ config.PackageOptions parse(string manifest) {
         }
         result.build_cmds ~= "make -j$(nproc)";
 
+      } else if (build_type == "nimble_single_bin") {
+        btype = "nimble_single_bin";
+        if (optsc < 3) {
+          error_helper(
+            "Parse Error: Not enough arguments for property 'build'.", linec, result
+          );
+          return result;
+        }
+
+        result.build_cmds ~= "nimble build -d:release";
+        binresult = strip(opts[2]);
+
       } else if (build_type == "manual") {
         btype = "manual";
         if (optsc < 3) {
@@ -235,6 +247,11 @@ config.PackageOptions parse(string manifest) {
 
       auto install_type = strip(opts[1]);
 
+      void single_bin_helper() {
+        result.install_cmds ~= "mkdir -p <placeholder>/usr/bin/";
+        result.install_cmds ~= "cp " ~ binresult ~ " <placeholder>/usr/bin/";
+      }
+
       if (install_type == "auto") {
         if (btype == "manual") {
           error_helper(
@@ -245,8 +262,9 @@ config.PackageOptions parse(string manifest) {
         } else if (btype == "autotools_make") {
           result.install_cmds ~= "make install DESTDIR=<placeholder>";
         }  else if (btype == "dub_single_bin") {
-          result.install_cmds ~= "mkdir -p <placeholder>/usr/bin/";
-          result.install_cmds ~= "cp " ~ binresult ~ " <placeholder>/usr/bin/";
+          single_bin_helper();
+        } else if (btype == "nimble_single_bin") {
+          single_bin_helper();
         } else {
           error_helper(
             "Parse Error: Property 'install_cmd' must be used after the 'build' property.",

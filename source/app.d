@@ -6,6 +6,8 @@ import build;
 // DONE: Finish extraction
 // DONE: Add building
 // DONE: Add install with DESTDIR
+// TODO: Support cmake, ninja_meson, kconfig, cargo, odin_build, zig_single_bin, go_single_bin
+//       bindir (to be paired with make), mkcarpkg.sh (a script that outputs a finished package) 
 // TODO: Add SHA256 hashes for source downloads
 // TODO: Add package splitting; one package can create multiple package archives
 // TODO: Add fully custom package scripts (to support like PKGBUILDs etc)
