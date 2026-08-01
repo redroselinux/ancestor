@@ -130,6 +130,14 @@ config.PackageOptions parse(string manifest) {
           result.git_checkout_ver = opts[3] == "auto" ? result.ver : strip(opts[3]);
         }
 
+        if (url.startsWith("hub:")) {
+          url = "https://github.com/" ~ url[4 .. $];
+        } else if (url.startsWith("lab:")) {
+          url = "https://gitlab.com/" ~ url[4 .. $];
+        } else if (url.startsWith("cberg:")) {
+          url = "https://codeberg.org/" ~ url[6 .. $];
+        }
+
         result.download = "git+" ~ url;
         log.info("Downloading from git+" ~ url ~ " (" ~ result.git_checkout_ver ~ ")");
 
