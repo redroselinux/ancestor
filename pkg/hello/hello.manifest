@@ -1,0 +1,11 @@
+author :: mostypc123 :: mostypc123@redroselinux.org
+package :: hello :: 2.12
+build_deps :: gcc make
+download :: gnu_ftp :: .tar.gz
+-- to add pre-build commands, simply make another build block
+-- build :: manual :: echo 'prebuild command'
+build :: autotools_make :: --disable-nls
+-- same with postbuild
+install_cmd :: auto
+-- car_post_inst :: cmd :: cmd2 :: ...
+-- car_dep :: dep1 dep2 ...

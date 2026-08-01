@@ -1,0 +1,6 @@
+name "ancestor"
+description "Package builder for Redrose Linux"
+authors "mostypc123"
+copyright "Copyright © 2026, mostypc123"
+license "GPL-3.0-only"
+libs "curl"
