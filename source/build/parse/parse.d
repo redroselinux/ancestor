@@ -234,6 +234,17 @@ config.PackageOptions parse(string manifest) {
         result.build_cmds ~= "cp target/release/" ~ strip(opts[2]) ~ " " ~ strip(opts[2]);
         binresult = strip(opts[2]);
 
+      } else if (build_type == "go_single_bin") {
+        btype = "go_single_bin";
+        if (optsc < 3) {
+          error_helper(
+            "Parse Error: Not enough arguments for property 'build'.", linec, result
+          );
+          return result;
+        }
+        result.build_cmds ~= "go build -o " ~ strip(opts[2]);
+        binresult = strip(opts[2]);
+
       } else if (build_type == "manual") {
         btype = "manual";
         if (optsc < 3) {
@@ -287,6 +298,8 @@ config.PackageOptions parse(string manifest) {
         } else if (btype == "nimble_single_bin") {
           single_bin_helper();
         } else if (btype == "cargo_single_bin") {
+          single_bin_helper();
+        } else if (btype == "go_single_bin") {
           single_bin_helper();
         } else {
           error_helper(
