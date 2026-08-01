@@ -1,0 +1,5 @@
+author :: mostypc123 :: mostypc123@redroselinux.org
+package :: ancestor :: 0.1
+download :: git :: https://github.com/redroselinux/ancestor :: master
+build :: dub_single_bin :: ancestor
+install_cmd :: auto

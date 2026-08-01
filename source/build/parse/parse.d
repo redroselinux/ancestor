@@ -30,6 +30,7 @@ config.PackageOptions parse(string manifest) {
   config.PackageOptions result;
 
   string btype; // not needed in the struct but used here
+  string binresult; // same here, for dub
   int linec = 1;
   foreach (line; splitLines(manifest)) {
     if (line.startsWith("--")) continue; // comments
@@ -212,6 +213,17 @@ config.PackageOptions parse(string manifest) {
         foreach (cmd; opts[2 .. $]) {
           result.build_cmds ~= strip(cmd);
         }
+      } else if (build_type == "dub_single_bin") {
+        if (optsc < 3) {
+          error_helper(
+            "Parse Error: Not enough arguments for property 'build'.", linec, result
+          );
+          return result;
+        }
+
+        btype = "dub_single_bin";
+        result.build_cmds ~= "dub build --build=release";
+        binresult = strip(opts[2]);
       }
     } else if (type == "install_cmd") {
       if (optsc < 2) {
@@ -232,6 +244,9 @@ config.PackageOptions parse(string manifest) {
           return result;
         } else if (btype == "autotools_make") {
           result.install_cmds ~= "make install DESTDIR=<placeholder>";
+        }  else if (btype == "dub_single_bin") {
+          result.install_cmds ~= "mkdir -p <placeholder>/usr/bin/";
+          result.install_cmds ~= "cp " ~ binresult ~ " <placeholder>/usr/bin/";
         } else {
           error_helper(
             "Parse Error: Property 'install_cmd' must be used after the 'build' property.",

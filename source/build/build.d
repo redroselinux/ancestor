@@ -53,6 +53,11 @@ int[] build(Package[] packages) {
       continue;
     }
 
+    if (exists(found ~ "/README")) {
+      log.warn("README for " ~ pkg ~ ":");
+      writeln(readText(found ~ "/README"));
+    }
+
     log.info("Building " ~ pkg);
     // read the the file without formatting if the package is a path
     auto file = f ? readText(found) : readText(found ~ "/" ~ pkg ~ ".manifest");
