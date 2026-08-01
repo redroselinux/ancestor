@@ -1,0 +1,7 @@
+author :: mostypc123 :: mostypc123@redroselinux.org
+package :: libcp :: 0.1
+build_deps :: gcc make
+download :: git :: https://github.com/redroselinux/libcp :: v0.1
+build :: manual :: make
+install_cmd :: manual :: mkdir -p <placeholder>/usr/bin
+install_cmd :: manual :: cp libcp <placeholder>/usr/bin

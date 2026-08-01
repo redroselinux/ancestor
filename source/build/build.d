@@ -70,35 +70,38 @@ int[] build(Package[] packages) {
     auto workdxi = workdx ~ "/stage"; // obv for stage
     mkdirRecurse(workdx);
 
+    string dl_dest = work;
     if (!parsed.git) {
-      work ~= "/" ~ parsed.download.split("/")[$ - 1];
+      dl_dest = work ~ "/" ~ parsed.download.split("/")[$ - 1];
     }
 
-    log.info("Downloading from " ~ parsed.download);
+    if (!parsed.git) log.info("Downloading from " ~ parsed.download);
 
-    verbosel(work);
+    verbosel(dl_dest);
     // I seriously couldnt come up with a name cos name collisions :sob:
     if (!downloads.I_HATE_NAME_CONFLICTS_SO_FUCK_YOU_THIS_IS_THE_FUNC_NAME(
-      parsed.download, work, parsed.git_checkout_ver
+      parsed.download, dl_dest, parsed.git_checkout_ver
     )) {
       returns ~= 1;
+      log.error("Failed to download " ~ parsed.download);
       continue;
     }
 
-    chdir(workd);
+    if (parsed.git) {
+      chdir(workd ~ "/cloned");
+    }
 
     if (!parsed.git) {
       auto extract_cmd = parsed.extract_cmd
-        .replace("<placeholder>", work)
+        .replace("<placeholder>", dl_dest)
         .replace("<dir>", workdx);
-
-      log.info("Extracting source: " ~ work);
+      log.info("Extracting source: " ~ dl_dest);
       verbosel(extract_cmd);
       
       auto pid = spawnShell(extract_cmd);
       auto status = wait(pid);
       if (status != 0) {
-        log.error("Failed to extract " ~ work ~ ".");
+        log.error("Failed to extract " ~ dl_dest ~ ".");
         returns ~= 1;
         continue;
       }
@@ -148,7 +151,7 @@ int[] build(Package[] packages) {
     log.info("Creating package archive");
     string output = parsed.name ~ ".tar.zst";
     string outputabs = absolutePath(output);
-    string cmd = "fakeroot tar -I zstd -cf " ~ output ~ " stage";
+    string cmd = "fakeroot tar -I zstd -cf " ~ outputabs ~ " -C " ~ absolutePath(workdx) ~ " stage";
     if (!runBuildCmd(cmd)) {
       returns ~= 1;
       continue;

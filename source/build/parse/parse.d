@@ -129,6 +129,7 @@ config.PackageOptions parse(string manifest) {
           result.git_checkout_ver = opts[3] == "auto" ? result.ver : strip(opts[3]);
         }
 
+        result.download = "git+" ~ url;
         log.info("Downloading from git+" ~ url ~ " (" ~ result.git_checkout_ver ~ ")");
 
       } else {
@@ -138,9 +139,9 @@ config.PackageOptions parse(string manifest) {
         return result;
       }
 
-      if (!url_valid(strip(result.download))) {
+      if (!url_valid(strip(result.download.replace("git+", "")))) {
         error_helper(
-          "Parse Error: Invalid URL '" ~ opts[2] ~ "'.", linec, result
+          "Parse Error: Invalid URL '" ~ strip(opts[2]) ~ "'.", linec, result
         );
         return result;
       }
@@ -289,7 +290,7 @@ config.PackageOptions parse(string manifest) {
     linec++;
   }
 
-  if (result.extract_cmd == "") {
+  if (!result.git && result.extract_cmd == "") {
     error_helper("Parse Error: Extract command was not set.", linec, result);
   }
 
